@@ -1,0 +1,12 @@
+A company stores information about its employees and departments.
+
+Each employee is identified by a unique social security number. We also
+store the employee's name (first name and last name), their salary, and
+their home address, which consists of street, city, state, and ZIP code.
+An employee can have several phone numbers.
+
+Each department has a unique department ID and a name. A department can
+be located in several different places.
+
+Every employee works in exactly one department, but a department can
+have many employees.
