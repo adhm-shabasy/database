@@ -1,0 +1,24 @@
+{
+  "entities": [
+    {
+      "name": "Employee",
+      "attributes": [
+        { "name": "SSN", "isPrimaryKey": true },
+        { "name": "Name", "composite": ["FirstName", "LastName"] },
+        { "name": "Phone", "isMultiValued": true },
+        { "name": "Address", "composite": ["Street", "City", "State", "ZIP"] }
+      ]
+    },
+    {
+      "name": "Department",
+      "attributes": [
+        { "name": "DeptID", "isPrimaryKey": true },
+        { "name": "Name" },
+        { "name": "Location", "isMultiValued": true }
+      ]
+    }
+  ],
+  "relationships": [
+    { "entity1": "Employee", "entity2": "Department", "name": "Works_In", "cardinality": "N:1" }
+  ]
+}

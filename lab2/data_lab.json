@@ -1,0 +1,11 @@
+{
+"Employee": [
+{"SSN": 1, "Name": "Ali", "DeptID": 10, "Salary": 5000},
+{"SSN": 2, "Name": "Mona", "DeptID": 20, "Salary": 6000},
+{"SSN": 3, "Name": "Omar", "DeptID": 10, "Salary": 7000}
+],
+"Department": [
+{"DeptID": 10, "Name": "IT"},
+{"DeptID": 20, "Name": "HR"}
+]
+}

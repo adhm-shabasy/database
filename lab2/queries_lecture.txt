@@ -1,0 +1,62 @@
+# ---- SELECT / PROJECT / sequences (slides 9-13)
+SELECT[Dno = 4](Employee)
+SELECT[(Dno = 4 AND Salary > 25000) OR (Dno = 5 AND Salary > 30000)](Employee)
+PROJECT[Lname, Fname, Salary](Employee)
+PROJECT[Sex, Salary](Employee)
+DEPT5_EMPS <- SELECT[Dno = 5](Employee)
+R(First_name, Last_name, Salary) <- PROJECT[Fname, Lname, Salary](DEPT5_EMPS)
+
+# ---- set operations (slides 16-21)
+RESULT1 <- PROJECT[Ssn](DEPT5_EMPS)
+RESULT2(Ssn) <- PROJECT[Super_ssn](DEPT5_EMPS)
+RESULT1 UNION RESULT2
+Student UNION Instructor
+Student INTERSECT Instructor
+Student - Instructor
+Instructor MINUS Student
+
+# ---- cartesian product + join (slides 22-26)
+FEMALE_EMPS <- SELECT[Sex = 'F'](Employee)
+EMPNAMES <- PROJECT[Fname, Lname, Ssn](FEMALE_EMPS)
+EMP_DEPENDENTS <- EMPNAMES CROSS Dependent
+ACTUAL_DEPENDENTS <- SELECT[Ssn = Essn](EMP_DEPENDENTS)
+PROJECT[Fname, Lname, Dependent_name](ACTUAL_DEPENDENTS)
+PROJECT[Dname, Lname, Fname](Department JOIN[Mgr_ssn = Ssn] Employee)
+
+# ---- natural join (slides 27-29)
+PROJECT * RENAME[(Dname, Dnum, Mgr_ssn, Mgr_start_date)](Department)
+Department * RENAME[(Dnumber, Dlocation)](Dept_Locations)
+
+# ---- n-way join
+PROJECT[Pname, Dname, Lname](((Project JOIN[Dnum = Dnumber] Department) JOIN[Mgr_ssn = Ssn] Employee))
+
+# ---- division (slides 33-36): employees working on all projects John Smith works on
+SMITH <- SELECT[Fname = 'John' AND Lname = 'Smith'](Employee)
+SMITH_PNOS <- PROJECT[Pno](Works_On JOIN[Essn = Ssn] SMITH)
+SSN_PNOS <- PROJECT[Essn, Pno](Works_On)
+SSNS(Ssn) <- SSN_PNOS DIVIDE SMITH_PNOS
+PROJECT[Fname, Lname](SSNS * Employee)
+
+# ---- aggregates (slides 38-41)
+AGGREGATE[MAX Salary](Employee)
+AGGREGATE[COUNT Ssn, AVERAGE Salary](Employee)
+AGGREGATE[Dno; COUNT Ssn, AVERAGE Salary](Employee)
+RENAME[R(Dno, No_of_employees, Average_sal)](AGGREGATE[Dno; COUNT Ssn, AVG Salary](Employee))
+
+# ---- outer join (slide 48)
+PROJECT[Fname, Minit, Lname, Dname](Employee LEFT OUTER JOIN[Ssn = Mgr_ssn] Department)
+
+# ---- outer union (slide 50)
+Student OUTER UNION Instructor
+
+# ---- queries from slides 52-53
+PROJECT[Fname, Lname, Address](SELECT[Dname = 'Research'](Department JOIN[Dnumber = Dno] Employee))
+PROJECT[Lname, Fname]((PROJECT[Ssn](Employee) - RENAME[(Ssn)](PROJECT[Essn](Dependent))) * Employee)
+
+# ---- RECURSIVE QUERY (slides 43-45, but for ANY number of levels)
+SUPERVISION <- PROJECT[Ssn, Super_ssn](Employee)
+CLOSED <- CLOSURE[Ssn, Super_ssn](SUPERVISION)
+CLOSED
+SELECT[Super_ssn = 888665555](CLOSED)
+# everyone supervised (directly or not) by James Borg:
+PROJECT[Fname, Lname, Level](PROJECT[Ssn, Level](SELECT[Super_ssn = 888665555](CLOSED)) * Employee)
